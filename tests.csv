@@ -1,0 +1,8 @@
+SWTCNumber,TestName,TestGroup,TestStepID
+A500L2-SWTC-0001,SampleSheetValidationIncorrectName,1,1
+A500L2-SWTC-0002,SampleSheetValidationCorrectName,1,2
+A500L2-SWTC-0003,FastqValidationSampleIDinFastqFileName,2,3
+A500L2-SWTC-0004,FastqValidationFastqFileswithSampleIDinSampleIDSubfolder,2,4
+A500L2-SWTC-0005,SampleSheetValidationNoDuplicateSamples,1,5
+A500L2-SWTC-0006,FastqGenerationSampleIDinFastqFileName,3,6
+A500L2-SWTC-0007,MetricsOutputCorrectFilename,4,7

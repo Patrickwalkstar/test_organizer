@@ -1,0 +1,8 @@
+TestStepID,Precondition,TestStep1,TestStep2,TestStep3,TestStep4,TestStep5
+1,Successful Analysis,Navigate to Analysis Output,The sample sheet file is not called SampleSheet.csv
+2,Successful Analysis,Navigate to Analysis Output,The sample sheet file is called SampleSheet.csv
+3,Successful Analysis,Navigate to Analysis Output,Open FastqValidation subfolder under Logs_Intermediates, Verify the presence of folders with the names of SampleIDs,In each of these folders the fastq files include the names of the samples
+4,Successful Analysis,Navigate to Analysis Output,Open FastqValidation subfolder under Logs_Intermediates, Verify the presence of folders with the names of SampleIDs,In each of these folders the fastq files include the names of the samples,The names of the fastq files include exactly the sample id
+5,Successful Analysis,Navigate to Analysis Output,The sample sheet file is present,Parse the SampleSheet for all SampleIDs,There are no duplicate SampleIDs
+6,Successful Analysis starting from BCL,Navigate to Analysis Output,Open FastqGeneration subfolder under Logs_Intermediates,Verify the presence of folders with the names of SampleIDs,In each of these folders the fastq files include the names of the samples
+7,Successful Analysis,Navigate to Analysis Output,The metrics output file is called MetricsOutput.tsv
