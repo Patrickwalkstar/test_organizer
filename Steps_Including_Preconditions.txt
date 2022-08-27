@@ -1,0 +1,57 @@
+1 = 1:Test Steps ID: 1
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 0, Description: Successful Analysis
+        FALSE ------ ID: 1, Description: Navigate to Analysis Output
+        FALSE ------ ID: 2, Description: The sample sheet file is not called SampleSheet.csv
+
+2 = 2:Test Steps ID: 2
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 3, Description: Successful Analysis
+        FALSE ------ ID: 4, Description: Navigate to Analysis Output
+        FALSE ------ ID: 5, Description: The sample sheet file is called SampleSheet.csv
+
+3 = 3:Test Steps ID: 3
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 6, Description: Successful Analysis
+        FALSE ------ ID: 7, Description: Navigate to Analysis Output
+        FALSE ------ ID: 8, Description: Open FastqValidation subfolder under Logs_Intermediates
+        FALSE ------ ID: 9, Description:  Verify the presence of folders with the names of SampleIDs
+        FALSE ------ ID: 10, Description: In each of these folders the fastq files include the names of the samples
+
+4 = 4:Test Steps ID: 4
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 11, Description: Successful Analysis
+        FALSE ------ ID: 12, Description: Navigate to Analysis Output
+        FALSE ------ ID: 13, Description: Open FastqValidation subfolder under Logs_Intermediates
+        FALSE ------ ID: 14, Description:  Verify the presence of folders with the names of SampleIDs
+        FALSE ------ ID: 15, Description: In each of these folders the fastq files include the names of the samples
+        FALSE ------ ID: 16, Description: The names of the fastq files include exactly the sample id
+
+5 = 5:Test Steps ID: 5 
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 17, Description: Successful Analysis
+        FALSE ------ ID: 18, Description: Navigate to Analysis Output
+        FALSE ------ ID: 19, Description: The sample sheet file is present
+        FALSE ------ ID: 20, Description: Parse the SampleSheet for all SampleIDs
+        FALSE ------ ID: 21, Description: There are no duplicate SampleIDs
+
+6 = 6:Test Steps ID: 6
+Precondition: Successful Analysis starting from BCL
+TestSteps:
+        FALSE ------ ID: 22, Description: Successful Analysis starting from BCL
+        FALSE ------ ID: 23, Description: Navigate to Analysis Output
+        FALSE ------ ID: 24, Description: Open FastqGeneration subfolder under Logs_Intermediates
+        FALSE ------ ID: 25, Description: Verify the presence of folders with the names of SampleIDs
+        FALSE ------ ID: 26, Description: In each of these folders the fastq files include the names of the samples
+
+7 = 7:Test Steps ID: 7
+Precondition: Successful Analysis
+TestSteps:
+        FALSE ------ ID: 27, Description: Successful Analysis
+        FALSE ------ ID: 28, Description: Navigate to Analysis Output
+        FALSE ------ ID: 29, Description: The metrics output file is called MetricsOutput.tsv

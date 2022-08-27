@@ -1,0 +1,22 @@
+2 = Navigate to Analysis Output:[1, 4, 7, 12, 18, 23, 28]
+1 = Successful Analysis:[0, 3, 6, 11, 17, 27]
+5 = Open FastqValidation subfolder under Logs_Intermediates:[8, 13]
+6 = Verify the presence of folders with the names of SampleIDs:[14, 25]
+3 = The sample sheet file is not called SampleSheet.csv:[2]
+4 = The sample sheet file is called SampleSheet.csv:[5]
+8 = The names of the fastq files include exactly the sample id:[16]
+9 = The sample sheet file is present:[19]
+10 = Parse the SampleSheet for all SampleIDs:[20]
+11 = There are no duplicate SampleIDs:[21]
+12 = Successful Analysis starting from BCL:[22]
+13 = Open FastqGeneration subfolder under Logs_Intermediates:[24]
+7 = In each of these folders the fastq files include the names of the samples:[26]
+14 = The metrics output file is called MetricsOutput.tsv:[29]
+
+0   1   
+
+Insert sort completed steps 
+
+Total number of test steps
+sort by list length
+then sort lists of the same length by the values in them if they intersect then try to interleave them

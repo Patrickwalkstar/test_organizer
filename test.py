@@ -4,6 +4,7 @@ class AllTestSteps:
     def __init__(self, filename: str) -> None: 
         test_steps_store = {}
         test_step_store = {}
+        test_preconditions = []
         
         with open(filename, 'r') as testStepsFile:
             lines = testStepsFile.readlines()[1:]
@@ -11,7 +12,10 @@ class AllTestSteps:
                 split_line = line.split(',')
                 testStepsID = split_line[0]
                 precondition = split_line[1]
-                testSteps = [TestStep(testStep) for testStep in split_line[1:]]
+                preconditionStep = TestStep(precondition, True)
+                # [preconditionStep] 
+                testSteps = [TestStep(testStep, False) for testStep in split_line[2:]]
+                test_preconditions.append(preconditionStep)
                 
                 for testStep in testSteps: 
                     if testStep.Description in test_step_store: 
@@ -23,7 +27,8 @@ class AllTestSteps:
         
         self.test_steps_store = test_steps_store
         self.test_step_store = test_step_store
-
+        self.test_preconditions = test_preconditions
+        
 class AllTests: 
     def __init__(self, filename: str) -> None: 
         with open(filename, 'r') as testFile: 
@@ -47,13 +52,18 @@ class TestSteps:
 
 class TestStep: 
     newID = itertools.count().__next__
-    def __init__(self, Description) -> None:
+    def __init__(self, Description: str, isPrecondition: bool, passed:bool=False) -> None:
         self.TestStepID = TestStep.newID()
         self.Description = Description
+        self.isPrecondition = isPrecondition
+        self.passed = passed
         
     def __repr__(self) -> str:
-        return f"Step ID: {self.TestStepID}, Description: {self.Description}"
-            
+        return f"{str(self.passed).upper()} ------ ID: {self.TestStepID}, Description: {self.Description}"
+    
+    def update(self, newStatus: bool):
+        self.passed = newStatus 
+
 class Test: 
     newID = itertools.count(1).__next__
     def __init__(self, SWTCNumber, TestName, TestGroup, TestStepID, TestSteps=None): 
@@ -64,9 +74,14 @@ class Test:
         self.TestStepID = TestStepID
         self.TestSteps = TestSteps
         self.TestStepIDs = None
+        self.TestStepsStatus = []
+        self.passed = None
         
     def __repr__(self) -> str:
         return f"Test # {self.TestNumber} - {self.SWTCNumber} - {self.TestName}"
+    
+    def update(self, newStatus: bool):
+        self.passed = newStatus 
     
     def printSteps(self): 
         print(self.TestSteps)
