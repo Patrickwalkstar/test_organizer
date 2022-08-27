@@ -1,6 +1,5 @@
 import itertools
 
-
 class AllTestSteps: 
     def __init__(self, filename: str) -> None: 
         test_steps_store = {}
@@ -71,23 +70,4 @@ class Test:
     
     def printSteps(self): 
         print(self.TestSteps)
-        
-allTestSteps = AllTestSteps('test_steps.csv')
-allTestStepsStore = allTestSteps.test_steps_store
-allTestStepStore = allTestSteps.test_step_store
-for key, value in allTestStepStore.items(): 
-    print(f"{key}:{value}")
-    
-allTests = AllTests('tests.csv').allTests
-for test in allTests:
-    try:
-        
-        test.TestSteps = allTestStepsStore[test.TestStepID.strip()]
-        print(test.TestSteps)
-        test.TestStepIDs = [testStep.TestStepID for testStep in test.TestSteps.asList()]
-        print(test.TestStepIDs)
-        test.printSteps()
-    except Exception:
-        print(f'{test} didnt work')
 
-        
