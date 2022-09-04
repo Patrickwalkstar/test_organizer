@@ -41,11 +41,11 @@ class TestSteps:
         self.Precondition = Precondition
         self.TestSteps = TestSteps
         
-    def __repr__(self) -> str:
-        test_step_repr = f"Test Steps ID: {self.TestStepsID} \nPrecondition: {self.Precondition} \nTestSteps:"
-        for step in self.TestSteps: 
-            test_step_repr += f"\n\t{step}"
-        return test_step_repr
+    # def __repr__(self) -> str:
+    #     test_step_repr = f"Test Steps ID: {self.TestStepsID} \nPrecondition: {self.Precondition} \nTestSteps:"
+    #     for step in self.TestSteps: 
+    #         test_step_repr += f"\n\t{step}"
+    #     return test_step_repr
     
     def asList(self) -> list:
         return list(self.TestSteps)
@@ -63,6 +63,9 @@ class TestStep:
     
     def update(self, newStatus: bool):
         self.passed = newStatus 
+        
+    def asString(self):
+        return self.Description
 
 class Test: 
     newID = itertools.count(1).__next__

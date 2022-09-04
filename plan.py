@@ -43,10 +43,11 @@ def main(finalTestPlan: Plan):
         stepCollection[count] = value
         
     for count, (key, value) in enumerate(allTestStepsStore.items(), start=1):
-        print(f"{count} = {key}:{value}")
+        values = ", \n".join(item.asString() for item in value.asList())
+        print(f'{count} = {key}:{values}')
 
-    for precondition in allTestPreconditions:
-        print(precondition.TestStepID)
+    # for precondition in allTestPreconditions:
+    #     print(precondition.TestStepID)
 
     
     for test in allTests:
@@ -59,7 +60,7 @@ def main(finalTestPlan: Plan):
         except Exception:
             print(f'{test} didnt work')
             
-    finalTestPlan.writePlan()
+    finalTestPlan.writePlan('final_test_plan.txt')
 
 if __name__ == "__main__":
     finalTestPlan = Plan()
