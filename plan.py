@@ -1,4 +1,4 @@
-from test import AllTestSteps, AllTests, TestSteps, TestStep, Test
+from test import AllTests
 from rich import print
 from collections import OrderedDict
 
@@ -31,35 +31,17 @@ def main(finalTestPlan: Plan):
     #Process the remaining step lists form the stepCollection[count] = value
     #Sort  
     
-    allTestSteps = AllTestSteps('test_steps.csv')
+
     allTests = AllTests('tests.csv').allTests
-    allTestStepsStore = allTestSteps.test_steps_store
-    allTestStepStore = allTestSteps.test_step_store
-    allTestPreconditions = allTestSteps.test_preconditions
 
-    stepCollection = {}
-    for count, (key, value) in enumerate(allTestStepStore.items(), start=1): 
-        print(f"{count} = {key}:{value}")
-        stepCollection[count] = value
-        
-    for count, (key, value) in enumerate(allTestStepsStore.items(), start=1):
-        print(f"{count} = {key}:{value}")
-
-    for precondition in allTestPreconditions:
-        print(precondition.TestStepID)
-
-    
     for test in allTests:
         try:
-            test.TestSteps = allTestStepsStore[test.TestStepID.strip()]
-            # print(test.TestSteps)
-            test.TestStepIDs = [testStep.TestStepID for testStep in test.TestSteps.asList()]
-            # print(test.TestStepIDs)
-            # test.printSteps()
+            print(test)
+            print(test.TestSteps)
         except Exception:
             print(f'{test} didnt work')
             
-    finalTestPlan.writePlan()
+    finalTestPlan.writePlan('test_plan.txt')
 
 if __name__ == "__main__":
     finalTestPlan = Plan()
