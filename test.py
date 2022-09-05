@@ -1,5 +1,76 @@
 import itertools
 
+
+
+# Linked List Node
+class Node:
+	def __init__(self, data):
+		self.data = data
+		self.next = None
+
+
+# Create & Handle List operations
+class LinkedList:
+	def __init__(self):
+		self.head = None
+
+	# Method to display the list
+	def printList(self):
+		temp = self.head
+		while temp:
+			print(temp.data, end=" ")
+			temp = temp.next
+
+	# Method to add element to list
+	def addToList(self, newData):
+		newNode = Node(newData)
+		if self.head is None:
+			self.head = newNode
+			return
+
+		last = self.head
+		while last.next:
+			last = last.next
+
+		last.next = newNode
+
+
+# Function to merge the lists
+# Takes two lists which are sorted
+# joins them to get a single sorted list
+def mergeLists(headA, headB):
+
+	# A dummy node to store the result
+	dummyNode = Node(0)
+
+	# Tail stores the last node
+	tail = dummyNode
+	while True:
+
+		# If any of the list gets completely empty
+		# directly join all the elements of the other list
+		if headA is None:
+			tail.next = headB
+			break
+		if headB is None:
+			tail.next = headA
+			break
+
+		# Compare the data of the lists and whichever is smaller is
+		# appended to the last of the merged list and the head is changed
+		if headA.data <= headB.data:
+			tail.next = headA
+			headA = headA.next
+		else:
+			tail.next = headB
+			headB = headB.next
+
+		# Advance the tail
+		tail = tail.next
+
+	# Returns the head of the merged list
+	return dummyNode.next
+
 class AllTestSteps: 
     def __init__(self, filename: str) -> None: 
         test_steps_store = {}
@@ -14,7 +85,7 @@ class AllTestSteps:
                 precondition = split_line[1]
                 preconditionStep = TestStep(precondition, True)
                 # [preconditionStep] 
-                testSteps = [TestStep(testStep, False) for testStep in split_line[2:]]
+                testSteps = [preconditionStep] + [TestStep(testStep, False) for testStep in split_line[2:]]
                 test_preconditions.append(preconditionStep)
                 
                 for testStep in testSteps: 
@@ -35,11 +106,16 @@ class AllTests:
             lines = testFile.readlines()[1:]
             self.allTests = [Test(*line.split(',')) for line in lines]
             
-class TestSteps: 
+class TestSteps(LinkedList): 
     def __init__(self, TestStepsID, Precondition, TestSteps) -> None:
         self.TestStepsID = TestStepsID
         self.Precondition = Precondition
         self.TestSteps = TestSteps
+        self.head = Node(f'{self.TestSteps[0].TestStepID} - {self.TestSteps[0]}')
+       
+        for testStep in self.TestSteps[1:]: 
+            self.addToList(f'{testStep.TestStepID} - {testStep}')
+            
         
     # def __repr__(self) -> str:
     #     test_step_repr = f"Test Steps ID: {self.TestStepsID} \nPrecondition: {self.Precondition} \nTestSteps:"
@@ -58,9 +134,12 @@ class TestStep:
         self.isPrecondition = isPrecondition
         self.passed = passed
         
-    def __repr__(self) -> str:
-        return f"{str(self.passed).upper()} ------ ID: {self.TestStepID}, Description: {self.Description}"
+    def __str__(self) -> str:
+        return self.Description
     
+    def __repr__(self) -> str:
+        return  f"{str(self.passed).upper()} ------ ID: {self.TestStepID}, Description: {self.Description}"
+        
     def update(self, newStatus: bool):
         self.passed = newStatus 
         

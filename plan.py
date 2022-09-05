@@ -33,22 +33,12 @@ def main(finalTestPlan: Plan):
     
     allTestSteps = AllTestSteps('test_steps.csv')
     allTests = AllTests('tests.csv').allTests
+    
+    
     allTestStepsStore = allTestSteps.test_steps_store
     allTestStepStore = allTestSteps.test_step_store
     allTestPreconditions = allTestSteps.test_preconditions
-
-    stepCollection = {}
-    for count, (key, value) in enumerate(allTestStepStore.items(), start=1): 
-        print(f"{count} = {key}:{value}")
-        stepCollection[count] = value
-        
-    for count, (key, value) in enumerate(allTestStepsStore.items(), start=1):
-        values = ", \n".join(item.asString() for item in value.asList())
-        print(f'{count} = {key}:{values}')
-
-    # for precondition in allTestPreconditions:
-    #     print(precondition.TestStepID)
-
+    
     
     for test in allTests:
         try:
@@ -60,8 +50,14 @@ def main(finalTestPlan: Plan):
         except Exception:
             print(f'{test} didnt work')
             
+            
+    for test in allTests: 
+        print(test.TestSteps.printList())
+
     finalTestPlan.writePlan('final_test_plan.txt')
 
 if __name__ == "__main__":
     finalTestPlan = Plan()
     main(finalTestPlan)
+    
+    
