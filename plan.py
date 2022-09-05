@@ -1,6 +1,7 @@
-from test import AllTestSteps, AllTests, TestSteps, TestStep, Test
+from test import AllTestSteps, AllTests, LinkedList, TestSteps, TestStep, Test, mergeLists
 from rich import print
 from collections import OrderedDict
+
 
 class Plan(OrderedDict): 
     def __init__(self) -> None:
@@ -43,6 +44,7 @@ def main(finalTestPlan: Plan):
     for test in allTests:
         try:
             test.TestSteps = allTestStepsStore[test.TestStepID.strip()]
+            test.TestSteps.SWTCNumber = test.SWTCNumber
             # print(test.TestSteps)
             test.TestStepIDs = [testStep.TestStepID for testStep in test.TestSteps.asList()]
             # print(test.TestStepIDs)
@@ -51,8 +53,20 @@ def main(finalTestPlan: Plan):
             print(f'{test} didnt work')
             
             
-    for test in allTests: 
-        print(test.TestSteps.printList())
+    # for test in allTests: 
+    #     print(test.TestSteps.printList())
+    
+    
+    current_list = allTests[0].TestSteps.head
+    for test in allTests[1:]: 
+        next_list = test.TestSteps.head
+        common_list = mergeLists(current_list, next_list)
+        current_list = common_list
+        
+        
+    new_linked_list = LinkedList()
+    new_linked_list.head = current_list
+    new_linked_list.printList()
 
     finalTestPlan.writePlan('final_test_plan.txt')
 
