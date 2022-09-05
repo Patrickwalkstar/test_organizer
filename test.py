@@ -49,6 +49,8 @@ class Test:
 		self.TestStepIDs = None
 		self.TestStepsStatus = []
 		self.passed = None
+		self.preconditionDescription = self.TestSteps[0].Description
+		self.precondition = self.TestSteps[0]
 		
 	def __repr__(self) -> str:
 		return f"Test # {self.TestNumber} - {self.SWTCNumber} - {self.TestName}"

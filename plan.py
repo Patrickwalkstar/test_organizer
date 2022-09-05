@@ -1,4 +1,4 @@
-from test import AllTests
+from test import AllTests, Test
 from rich import print
 from collections import OrderedDict
 
@@ -12,8 +12,35 @@ class Plan(OrderedDict):
         
     def writePlan(self, filename: str):
         with open(filename, 'w') as writeFile: 
-             writeFile.writelines(self.stepExecutionOrder)
+            writeFile.write('\n'.join(self.stepExecutionOrder) + '\n')
+
+def calculateStepsByPrecondition(test: Test, precondition_dependent_Steps: dict) -> dict:
+    if test.preconditionDescription not in precondition_dependent_Steps:
+        precondition_dependent_Steps[test.preconditionDescription] = len(test.TestSteps) - 1
+    else: 
+        precondition_dependent_Steps[test.preconditionDescription] += len(test.TestSteps) - 1
         
+    return precondition_dependent_Steps
+
+def calculateTestsByPrecondition(test: Test, precondition_dependent_Tests: dict) -> dict:
+    if test.precondition not in precondition_dependent_Tests:
+        precondition_dependent_Tests[test.preconditionDescription] = 1
+    else: 
+        precondition_dependent_Tests[test.preconditionDescription] += 1
+    
+    return precondition_dependent_Tests
+
+def calculatePreconditionExecutionOrderByRatio(test: Test, precondition_dependent_Steps: dict, precondition_dependent_Tests: dict) -> dict:
+    
+    return {key: precondition_dependent_Tests[key] / precondition_dependent_Steps.get(key, 0) for key in precondition_dependent_Tests.keys()}
+
+def executePrecondition(plan: Plan, precondition: str, allTests: list[Test]): 
+    for test in allTests: 
+        if test.preconditionDescription == precondition: 
+            test.precondition.update(True)
+            plan.stepExecutionOrder.append(f'{test.SWTCNumber} - {test.preconditionDescription}')
+        
+
 def main(finalTestPlan: Plan):
     
     #Calculate the number of tests or test steps that rely on each precondition
@@ -33,16 +60,37 @@ def main(finalTestPlan: Plan):
     
 
     allTests = AllTests('tests.csv').allTests
-
+    precondition_dependent_Steps = {}  
+    precondition_dependent_Tests = {}
     for test in allTests:
-        try:
-            print(test)
-            print(test.TestSteps)
-        except Exception:
-            print(f'{test} didnt work')
+        precondition_dependent_Steps = calculateStepsByPrecondition(test, precondition_dependent_Steps)
+        precondition_dependent_Tests = calculateTestsByPrecondition(test, precondition_dependent_Tests)
+        ratio_steps_tests = calculatePreconditionExecutionOrderByRatio(test, precondition_dependent_Steps, precondition_dependent_Tests)
+    
+    print(precondition_dependent_Steps)
+    print(precondition_dependent_Tests)
+    print(ratio_steps_tests)
+    
+    numberofMachinesAvailable = int(input("Enter the number of machines available to run tests: "))
+    
+    while len(ratio_steps_tests) > 0:
+        for _ in range(numberofMachinesAvailable):
             
+            bestPrecondition = min(ratio_steps_tests, key=ratio_steps_tests.get)
+            ratio_steps_tests.pop(bestPrecondition)
+            
+            executePrecondition(finalTestPlan, bestPrecondition, allTests)
+    
     finalTestPlan.writePlan('test_plan.txt')
 
 if __name__ == "__main__":
     finalTestPlan = Plan()
     main(finalTestPlan)
+    
+"""take the most common precondition by taking the preconidtion who has the most dependent number of steps / number of times the preconidtion is present for all tests
+take the number of machines and process in this ratio order
+
+pop this precondition from the tests from the bottom of their step stacks and write to output in highest ration order
+
+
+"""

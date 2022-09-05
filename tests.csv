@@ -1,6 +1,6 @@
-SWTCNumber,TestName,TestGroup,TestStepID
+SWTCNumber,TestName,TestGroup,TestSteps
 A500L2-SWTC-0001,SampleSheetValidationIncorrectName,1,[Successful Analysis,Navigate to Analysis Output,The sample sheet file is not called SampleSheet.csv]
-A500L2-SWTC-0002,SampleSheetValidationCorrectName,1,,[Successful Analysis,Navigate to Analysis Output,The sample sheet file is called SampleSheet.csv]
+A500L2-SWTC-0002,SampleSheetValidationCorrectName,1,[Successful Analysis,Navigate to Analysis Output,The sample sheet file is called SampleSheet.csv]
 A500L2-SWTC-0003,FastqValidationSampleIDinFastqFileName,2,[Successful Analysis,Navigate to Analysis Output,Open FastqValidation subfolder under Logs_Intermediates, Verify the presence of folders with the names of SampleIDs,In each of these folders the fastq files include the names of the samples]
 A500L2-SWTC-0004,FastqValidationFastqFileswithSampleIDinSampleIDSubfolder,2,[Successful Analysis,Navigate to Analysis Output,Open FastqValidation subfolder under Logs_Intermediates, Verify the presence of folders with the names of SampleIDs,In each of these folders the fastq files include the names of the samples,The names of the fastq files include exactly the sample id]
 A500L2-SWTC-0005,SampleSheetValidationNoDuplicateSamples,1,[Successful Analysis,Navigate to Analysis Output,The sample sheet file is present,Parse the SampleSheet for all SampleIDs,There are no duplicate SampleIDs]
