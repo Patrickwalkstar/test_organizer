@@ -1,7 +1,7 @@
-A500L2-SWTC-0001 - Successful Analysis
-A500L2-SWTC-0002 - Successful Analysis
-A500L2-SWTC-0003 - Successful Analysis
-A500L2-SWTC-0004 - Successful Analysis
-A500L2-SWTC-0005 - Successful Analysis
-A500L2-SWTC-0007 - Successful Analysis
-A500L2-SWTC-0006 - Successful Analysis starting from BCL
+A500L2-SWTC-0001 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0002 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0003 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0004 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0005 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0007 - Execute Precondition: Successful Analysis
+A500L2-SWTC-0006 - Execute Precondition: Successful Analysis starting from BCL

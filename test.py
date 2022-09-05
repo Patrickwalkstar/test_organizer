@@ -11,10 +11,10 @@ class AllTests:
 				test_items = line.split(',')
 				identifiers = test_items[:3]
 				test_Steps = test_items[3:]
-				testSteps = []
+				testSteps = {}
 				for index, test_Step in enumerate(test_Steps):
 					test_Step = test_Step.strip('[').strip(']')
-					testSteps.append(TestStep(test_Step, index is 0))
+					testSteps[TestStep(test_Step, index is 0)] = False
 			
 				self.allTests.append(Test(*identifiers, TestSteps=testSteps))
 
@@ -46,11 +46,10 @@ class Test:
 		self.TestName = TestName
 		self.TestGroup = TestGroup
 		self.TestSteps = TestSteps
-		self.TestStepIDs = None
-		self.TestStepsStatus = []
 		self.passed = None
-		self.preconditionDescription = self.TestSteps[0].Description
-		self.precondition = self.TestSteps[0]
+
+		self.precondition = next((testStep if testStep.isPrecondition else None for testStep in self.TestSteps))
+		self.preconditionDescription = next((testStep.Description if testStep.isPrecondition else None for testStep in self.TestSteps))
 		
 	def __repr__(self) -> str:
 		return f"Test # {self.TestNumber} - {self.SWTCNumber} - {self.TestName}"
@@ -60,4 +59,6 @@ class Test:
 	
 	def printSteps(self): 
 		print(self.TestSteps)
-
+  
+	def getRemainingSteps(self): 
+		return {step:status for step, status in self.TestSteps.items() if status}

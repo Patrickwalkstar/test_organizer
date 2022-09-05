@@ -31,14 +31,14 @@ def calculateTestsByPrecondition(test: Test, precondition_dependent_Tests: dict)
     return precondition_dependent_Tests
 
 def calculatePreconditionExecutionOrderByRatio(test: Test, precondition_dependent_Steps: dict, precondition_dependent_Tests: dict) -> dict:
-    
-    return {key: precondition_dependent_Tests[key] / precondition_dependent_Steps.get(key, 0) for key in precondition_dependent_Tests.keys()}
+    ratio_dict = {key: precondition_dependent_Tests[key] / precondition_dependent_Steps.get(key, 0) for key in precondition_dependent_Tests.keys()}
+    return {k: v for k, v in sorted(ratio_dict.items(), key=lambda item: item[1])}
 
 def executePrecondition(plan: Plan, precondition: str, allTests: list[Test]): 
     for test in allTests: 
         if test.preconditionDescription == precondition: 
             test.precondition.update(True)
-            plan.stepExecutionOrder.append(f'{test.SWTCNumber} - {test.preconditionDescription}')
+            plan.stepExecutionOrder.append(f'{test.SWTCNumber} - Execute Precondition: {test.preconditionDescription}')
         
 
 def main(finalTestPlan: Plan):
@@ -66,7 +66,7 @@ def main(finalTestPlan: Plan):
         precondition_dependent_Steps = calculateStepsByPrecondition(test, precondition_dependent_Steps)
         precondition_dependent_Tests = calculateTestsByPrecondition(test, precondition_dependent_Tests)
         ratio_steps_tests = calculatePreconditionExecutionOrderByRatio(test, precondition_dependent_Steps, precondition_dependent_Tests)
-    
+
     print(precondition_dependent_Steps)
     print(precondition_dependent_Tests)
     print(ratio_steps_tests)
@@ -80,15 +80,14 @@ def main(finalTestPlan: Plan):
             ratio_steps_tests.pop(bestPrecondition)
             
             executePrecondition(finalTestPlan, bestPrecondition, allTests)
-    
+            
     finalTestPlan.writePlan('test_plan.txt')
 
 if __name__ == "__main__":
     finalTestPlan = Plan()
     main(finalTestPlan)
     
-"""take the most common precondition by taking the preconidtion who has the most dependent number of steps / number of times the preconidtion is present for all tests
-take the number of machines and process in this ratio order
+"""
 
 pop this precondition from the tests from the bottom of their step stacks and write to output in highest ration order
 
