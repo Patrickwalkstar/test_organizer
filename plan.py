@@ -69,7 +69,9 @@ def main(finalTestPlan: Plan):
     
     numberofMachinesAvailable = int(input("Enter the number of machines available to run tests: "))
     
-    #If the user has X preconditions and Y machines, then they have X // Y clear iterations with X % Y remainder. When the number of preconditions is less than the number of machines alster the number of machines available.
+    #If the user has X preconditions and Y machines, then they have X // Y clear iterations with X % Y 
+    # remainder. When the number of preconditions is less than the number of machines alster the 
+    # number of machines available.
     
     while len(ratio_steps_tests) > 0:
         if len(ratio_steps_tests) < numberofMachinesAvailable:
