@@ -5,3 +5,6 @@ A500L2-SWTC-0004 - Execute Precondition: Successful Analysis
 A500L2-SWTC-0005 - Execute Precondition: Successful Analysis
 A500L2-SWTC-0007 - Execute Precondition: Successful Analysis
 A500L2-SWTC-0006 - Execute Precondition: Successful Analysis starting from BCL
+A500L2-SWTC-0010 - Execute Precondition: Successful Analysis that passed all Metrics
+A500L2-SWTC-0008 - Execute Precondition: Successful Analysis that failed RunQc Metrics
+A500L2-SWTC-0009 - Execute Precondition: Successful Analysis that passed all RunQc Metrics

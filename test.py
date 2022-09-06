@@ -8,13 +8,12 @@ class AllTests:
 			lines = testFile.readlines()[1:]
    
 			for line in lines:
-				test_items = line.split(',')
-				identifiers = test_items[:3]
-				test_Steps = test_items[3:]
+				test_items = line.split('[')
+				identifiers = [item.strip() for item in test_items[0].split(',')[:-1]]
+				test_Steps = [item.strip() for item in test_items[1].rstrip(']\n').split(',')]
 				testSteps = {}
 				for index, test_Step in enumerate(test_Steps):
-					test_Step = test_Step.strip('[').strip(']')
-					testSteps[TestStep(test_Step, index is 0)] = False
+					testSteps[TestStep(test_Step, index == 0)] = False
 			
 				self.allTests.append(Test(*identifiers, TestSteps=testSteps))
 
@@ -34,9 +33,7 @@ class TestStep:
 		
 	def update(self, newStatus: bool):
 		self.passed = newStatus 
-		
-	def asString(self):
-		return self.Description
+
 
 class Test: 
 	newID = itertools.count(1).__next__
@@ -45,7 +42,7 @@ class Test:
 		self.TestNumber = Test.newID()
 		self.TestName = TestName
 		self.TestGroup = TestGroup
-		self.TestSteps = TestSteps
+		self.TestSteps = TestSteps #dictionary {testSteps: status}
 		self.passed = None
 
 		self.precondition = next((testStep if testStep.isPrecondition else None for testStep in self.TestSteps))
@@ -60,5 +57,9 @@ class Test:
 	def printSteps(self): 
 		print(self.TestSteps)
   
-	def getRemainingSteps(self): 
-		return {step:status for step, status in self.TestSteps.items() if status}
+	def getallStepsStatus(self): 
+		return self.TestSteps
+
+	def getStepsStatus(self, passed: bool): 
+		return dict(filter(lambda val: val[1] is passed, self.TestSteps.items()))
+  

@@ -38,6 +38,7 @@ def executePrecondition(plan: Plan, precondition: str, allTests: list[Test]):
     for test in allTests: 
         if test.preconditionDescription == precondition: 
             test.precondition.update(True)
+            test.TestSteps[test.precondition] = True
             plan.stepExecutionOrder.append(f'{test.SWTCNumber} - Execute Precondition: {test.preconditionDescription}')
         
 
@@ -58,7 +59,6 @@ def main(finalTestPlan: Plan):
     #Process the remaining step lists form the stepCollection[count] = value
     #Sort  
     
-
     allTests = AllTests('tests.csv').allTests
     precondition_dependent_Steps = {}  
     precondition_dependent_Tests = {}
@@ -66,21 +66,26 @@ def main(finalTestPlan: Plan):
         precondition_dependent_Steps = calculateStepsByPrecondition(test, precondition_dependent_Steps)
         precondition_dependent_Tests = calculateTestsByPrecondition(test, precondition_dependent_Tests)
         ratio_steps_tests = calculatePreconditionExecutionOrderByRatio(test, precondition_dependent_Steps, precondition_dependent_Tests)
-
-    print(precondition_dependent_Steps)
-    print(precondition_dependent_Tests)
-    print(ratio_steps_tests)
     
     numberofMachinesAvailable = int(input("Enter the number of machines available to run tests: "))
     
+    #If the user has X preconditions and Y machines, then they have X // Y clear iterations with X % Y remainder. When the number of preconditions is less than the number of machines alster the number of machines available.
+    
     while len(ratio_steps_tests) > 0:
-        for _ in range(numberofMachinesAvailable):
+        if len(ratio_steps_tests) < numberofMachinesAvailable:
+            numberofMachinesAvailable = len(ratio_steps_tests)
             
+        for _ in range(numberofMachinesAvailable):
             bestPrecondition = min(ratio_steps_tests, key=ratio_steps_tests.get)
             ratio_steps_tests.pop(bestPrecondition)
-            
             executePrecondition(finalTestPlan, bestPrecondition, allTests)
             
+            for test in allTests: 
+                if bestPrecondition == test.preconditionDescription:
+                    print(test.getStepsStatus(True))
+                    print(test.getStepsStatus(False))
+                    print('-------------------------------')
+                    
     finalTestPlan.writePlan('test_plan.txt')
 
 if __name__ == "__main__":
