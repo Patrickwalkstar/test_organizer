@@ -1,0 +1,15 @@
+    
+    #Calculate the number of tests or test steps that rely on each precondition
+    #Based on the number of Machines that are available to the user
+    #Execute the precondition who has the most tests that rely on it 
+    #   and remove it from the list, and so on, base on machine availability.
+    #Process preconditions first
+        #For each precondition in the list of preconditions
+            #For each Test that relies on this test step (the test step is in their list of test steps): 
+                #add the test and step to the test plan
+            #update the status of the precondition step2 as passed
+            #update the status of the precondition step in the test case that has the precondition as passed
+            #remove the precondition step from the dictionary of enumerations:step unique identifiers
+    
+    #Process the remaining step lists form the stepCollection[count] = value
+    #Sort  

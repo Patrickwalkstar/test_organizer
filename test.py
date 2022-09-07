@@ -1,10 +1,17 @@
 import itertools
+from collections import OrderedDict
 		
 class AllTests: 
 	def __init__(self, filename: str) -> None: 
-		self.allTests = []
-  
-		with open(filename, 'r') as testFile: 
+		self.filename = filename
+		self.tests = self.allTests
+		self.minRemainingStepCount = self.remainingStepCount(key='min')
+		self.maxRemainingStepCount = self.remainingStepCount(key='max')
+
+	@property
+	def allTests(self) -> list:
+		tests = []
+		with open(self.filename, 'r') as testFile: 
 			lines = testFile.readlines()[1:]
    
 			for line in lines:
@@ -15,7 +22,15 @@ class AllTests:
 				for index, test_Step in enumerate(test_Steps):
 					testSteps[TestStep(test_Step, index == 0)] = False
 			
-				self.allTests.append(Test(*identifiers, TestSteps=testSteps))
+				tests.append(Test(*identifiers, TestSteps=testSteps))
+		return tests
+	
+	def remainingStepCount(self, key): 
+		remaining_step_count = [test.getRemainingStepCount() for test in self.allTests]
+		operation = {'max': min(remaining_step_count),
+					'min': max(remaining_step_count)
+		}
+		return operation[key]
 
 class TestStep: 
 	newID = itertools.count(1).__next__
@@ -42,7 +57,7 @@ class Test:
 		self.TestNumber = Test.newID()
 		self.TestName = TestName
 		self.TestGroup = TestGroup
-		self.TestSteps = TestSteps #dictionary {testSteps: status}
+		self.TestSteps = OrderedDict(TestSteps) #dictionary {testSteps: status}
 		self.passed = None
 
 		self.precondition = next((testStep if testStep.isPrecondition else None for testStep in self.TestSteps))
@@ -62,4 +77,7 @@ class Test:
 
 	def getStepsStatus(self, passed: bool): 
 		return dict(filter(lambda val: val[1] is passed, self.TestSteps.items()))
+
+	def getRemainingStepCount(self): 
+		return len(self.getStepsStatus(False))
   

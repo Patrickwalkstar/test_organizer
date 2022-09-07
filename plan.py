@@ -1,4 +1,4 @@
-from test import AllTests, Test
+from test import AllTests, Test, TestStep
 from rich import print
 from collections import OrderedDict
 
@@ -13,6 +13,22 @@ class Plan(OrderedDict):
     def writePlan(self, filename: str):
         with open(filename, 'w') as writeFile: 
             writeFile.write('\n'.join(self.stepExecutionOrder) + '\n')
+
+
+
+def executePrecondition(plan: Plan, bestPrecondition: str, allTests: list): 
+    for test in allTests: 
+        if bestPrecondition == test.preconditionDescription: 
+            test.precondition.update(True)
+            test.TestSteps[test.precondition] = True
+            plan.stepExecutionOrder.append(f'{test.SWTCNumber} - Execute Precondition: {bestPrecondition}')
+
+def executeTestStep(plan: Plan, bestTestStep: TestStep, allTests: list, bestPrecondition): 
+    for test in allTests: 
+        if bestPrecondition == test.preconditionDescription:
+            if bestTestStep == test.getStepsStatus(False).popitem()[0]: 
+                test.TestSteps[bestTestStep] = True
+                plan.stepExecutionOrder.append(f'{test.SWTCNumber} - Execute Test Step: {bestTestStep}')
 
 def calculateStepsByPrecondition(test: Test, precondition_dependent_Steps: dict) -> dict:
     if test.preconditionDescription not in precondition_dependent_Steps:
@@ -30,64 +46,87 @@ def calculateTestsByPrecondition(test: Test, precondition_dependent_Tests: dict)
     
     return precondition_dependent_Tests
 
-def calculatePreconditionExecutionOrderByRatio(test: Test, precondition_dependent_Steps: dict, precondition_dependent_Tests: dict) -> dict:
+def calculatePreconditionExecutionOrderByRatio(precondition_dependent_Steps: dict, precondition_dependent_Tests: dict) -> dict:
     ratio_dict = {key: precondition_dependent_Tests[key] / precondition_dependent_Steps.get(key, 0) for key in precondition_dependent_Tests.keys()}
     return {k: v for k, v in sorted(ratio_dict.items(), key=lambda item: item[1])}
 
-def executePrecondition(plan: Plan, precondition: str, allTests: list[Test]): 
-    for test in allTests: 
-        if test.preconditionDescription == precondition: 
-            test.precondition.update(True)
-            test.TestSteps[test.precondition] = True
-            plan.stepExecutionOrder.append(f'{test.SWTCNumber} - Execute Precondition: {test.preconditionDescription}')
+def calculateTestsByTestStep(test: Test, test_step_dependentTests: dict) -> dict:
+    next_test_Step = test.getStepsStatus(False).popitem()[0]
+    print(next_test_Step)
+
+    if next_test_Step:
+        if next_test_Step not in test_step_dependentTests: 
+            test_step_dependentTests[next_test_Step] = 1
+        else:
+            test_step_dependentTests[next_test_Step] += 1
+
+    return test_step_dependentTests
+
+def calcualteStepsbyTestStep(test: Test, test_step_dependentSteps: dict) -> dict:
+    steps_not_executed = test.getStepsStatus(False)
+    next_test_Step = steps_not_executed.popitem()[0]
+    
+    if next_test_Step:
+        if next_test_Step not in test_step_dependentSteps:
+            test_step_dependentSteps[next_test_Step] = len(steps_not_executed)
+        else: 
+            test_step_dependentSteps[next_test_Step] += len(steps_not_executed)
+
+    return test_step_dependentSteps
+
+def calculateStepExecutionOrderbyTestStep(test_step_dependentTests: dict, test_step_dependentSteps: dict):
+    ratio_dict = {key: test_step_dependentTests[key] / test_step_dependentSteps.get(key, 0) for key in test_step_dependentTests.keys()}
+    return {k: v for k, v in sorted(ratio_dict.items(), key=lambda item: item[1])}
         
 
 def main(finalTestPlan: Plan):
+
     
-    #Calculate the number of tests or test steps that rely on each precondition
-    #Based on the number of Machines that are available to the user
-    #Execute the precondition who has the most tests that rely on it 
-    #   and remove it from the list, and so on, base on machine availability.
-    #Process preconditions first
-        #For each precondition in the list of preconditions
-            #For each Test that relies on this test step (the test step is in their list of test steps): 
-                #add the test and step to the test plan
-            #update the status of the precondition step as passed
-            #update the status of the precondition step in the test case that has the precondition as passed
-            #remove the precondition step from the dictionary of enumerations:step unique identifiers
-    
-    #Process the remaining step lists form the stepCollection[count] = value
-    #Sort  
-    
-    allTests = AllTests('tests.csv').allTests
+    allTestsObject = AllTests('tests.csv')
+    allTests = allTestsObject.tests
+    minSteps = allTestsObject.minRemainingStepCount
     precondition_dependent_Steps = {}  
     precondition_dependent_Tests = {}
-    for test in allTests:
+    for test in allTests:    
         precondition_dependent_Steps = calculateStepsByPrecondition(test, precondition_dependent_Steps)
         precondition_dependent_Tests = calculateTestsByPrecondition(test, precondition_dependent_Tests)
-        ratio_steps_tests = calculatePreconditionExecutionOrderByRatio(test, precondition_dependent_Steps, precondition_dependent_Tests)
+        ratio_precondition_by_tests_to_steps = calculatePreconditionExecutionOrderByRatio(precondition_dependent_Steps, precondition_dependent_Tests)
     
-    numberofMachinesAvailable = int(input("Enter the number of machines available to run tests: "))
+    # numberofMachinesAvailable = int(input("Enter the number of machines available to run tests: "))
+    numberofMachinesAvailable = 2
     
     #If the user has X preconditions and Y machines, then they have X // Y clear iterations with X % Y 
     # remainder. When the number of preconditions is less than the number of machines alster the 
     # number of machines available.
     
-    while len(ratio_steps_tests) > 0:
-        if len(ratio_steps_tests) < numberofMachinesAvailable:
-            numberofMachinesAvailable = len(ratio_steps_tests)
+    while len(ratio_precondition_by_tests_to_steps) > 0:
+        if len(ratio_precondition_by_tests_to_steps) < numberofMachinesAvailable:
+            numberofMachinesAvailable = len(ratio_precondition_by_tests_to_steps)
             
         for _ in range(numberofMachinesAvailable):
-            bestPrecondition = min(ratio_steps_tests, key=ratio_steps_tests.get)
-            ratio_steps_tests.pop(bestPrecondition)
+            bestPrecondition = min(ratio_precondition_by_tests_to_steps, key=ratio_precondition_by_tests_to_steps.get)
+            ratio_precondition_by_tests_to_steps.pop(bestPrecondition)
             executePrecondition(finalTestPlan, bestPrecondition, allTests)
             
-            for test in allTests: 
+            test_step_dependentTests = {}
+            test_step_dependentSteps = {}
+            for test in allTests:
+                
                 if bestPrecondition == test.preconditionDescription:
-                    print(test.getStepsStatus(True))
-                    print(test.getStepsStatus(False))
-                    print('-------------------------------')
-                    
+                    print(test)
+                    # print(minSteps)
+                    # while minSteps > 0:
+                    test_step_dependentTests = calculateTestsByTestStep(test, test_step_dependentTests)
+                    test_step_dependentSteps = calcualteStepsbyTestStep(test, test_step_dependentSteps)
+                    ratio_steps_by_steps_to_test = calculateStepExecutionOrderbyTestStep(test_step_dependentTests, test_step_dependentSteps)
+                    #     # bestTestStep = min(ratio_steps_by_steps_to_test, key=ratio_steps_b y_steps_to_test.get)
+                    print(test_step_dependentSteps)
+                    print(test_step_dependentTests)
+                    print(ratio_steps_by_steps_to_test)
+                        
+                    #     # executeTestStep(finalTestPlan, bestTestStep, allTests, bestPrecondition)
+                    #     # minSteps = allTestsObject.minRemainingStepCount
+
     finalTestPlan.writePlan('test_plan.txt')
 
 if __name__ == "__main__":
@@ -98,5 +137,6 @@ if __name__ == "__main__":
 
 pop this precondition from the tests from the bottom of their step stacks and write to output in highest ration order
 
+Why is Navigate to Analysis Output not in the output dicts?
 
 """
